@@ -1,0 +1,7 @@
+Generic single-database configuration with an async dbapi.
+
+Команды:
+    uv run alembic revision --autogenerate -m "description"  # Создать миграцию
+    uv run alembic upgrade head                              # Применить миграции
+    uv run alembic downgrade -1                              # Откатить последнюю
+    uv run alembic history                                   # История миграций
