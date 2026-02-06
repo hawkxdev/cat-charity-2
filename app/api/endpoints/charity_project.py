@@ -1,6 +1,6 @@
 """Эндпоинты для CharityProject."""
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from app.api.validators import (
     check_name_duplicate,
@@ -15,6 +15,7 @@ from app.schemas.charity_project import (
     CharityProjectDB,
     CharityProjectUpdate,
 )
+from app.core.user import current_superuser
 from app.services.investment import (
     close_invested,
     create_project_with_investment,
@@ -37,6 +38,7 @@ async def get_all_charity_projects(session: SessionDep):
     '/',
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)],
 )
 async def create_charity_project(
     charity_project: CharityProjectCreate,
@@ -51,6 +53,7 @@ async def create_charity_project(
     '/{project_id}',
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)],
 )
 async def update_charity_project(
     project_id: int,
@@ -74,6 +77,7 @@ async def update_charity_project(
     '/{project_id}',
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
+    dependencies=[Depends(current_superuser)],
 )
 async def delete_charity_project(
     project_id: int,

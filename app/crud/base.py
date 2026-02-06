@@ -55,11 +55,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in: CreateSchemaType,
         session: AsyncSession,
         *,
+        user: Optional[ModelType] = None,
         commit: bool = True,
     ) -> ModelType:
         """Создать новый объект."""
         obj_in_data = obj_in.model_dump()
         db_obj = self.model(**obj_in_data)
+        if user is not None:
+            db_obj.user_id = user.id
         session.add(db_obj)
         if commit:
             await session.commit()

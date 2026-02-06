@@ -9,6 +9,7 @@ from app.crud.charity_project import charity_project_crud
 from app.crud.donation import donation_crud
 from app.models.charity_project import CharityProject
 from app.models.donation import Donation
+from app.models.user import User
 from app.schemas.charity_project import CharityProjectCreate
 from app.schemas.donation import DonationCreate
 
@@ -62,10 +63,11 @@ async def create_project_with_investment(
 async def create_donation_with_investment(
     donation_data: DonationCreate,
     session: AsyncSession,
+    user: User,
 ) -> Donation:
     """Создать пожертвование и распределить по проектам (одна транзакция)."""
     new_donation = await donation_crud.create(
-        donation_data, session, commit=False
+        donation_data, session, user=user, commit=False
     )
     projects = await charity_project_crud.get_not_fully_invested(session)
     distribute_funds(new_donation, projects)
