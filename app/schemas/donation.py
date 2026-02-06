@@ -31,6 +31,7 @@ class DonationDB(DonationBase):
 class DonationFullInfoDB(DonationDB):
     """Схема пожертвования с полной информацией (для GET)."""
 
+    user_id: int
     invested_amount: int
     fully_invested: bool
     close_date: Optional[datetime]
