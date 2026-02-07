@@ -1,5 +1,6 @@
 """Конфигурация FastAPI Users."""
 
+import logging
 from collections.abc import AsyncGenerator
 from typing import Annotated, Optional, Union
 
@@ -9,6 +10,7 @@ from fastapi_users import (
     FastAPIUsers,
     IntegerIDMixin,
     InvalidPasswordException,
+    schemas,
 )
 from fastapi_users.authentication import (
     AuthenticationBackend,
@@ -18,10 +20,11 @@ from fastapi_users.authentication import (
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.config import settings
+from app.core.config import JWT_LIFETIME_SECONDS, settings
 from app.core.db import get_async_session
 from app.models.user import User
-from app.schemas.user import UserCreate
+
+logger = logging.getLogger(__name__)
 
 
 async def get_user_db(
@@ -36,7 +39,9 @@ bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 
 def get_jwt_strategy() -> JWTStrategy:
     """JWT стратегия."""
-    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600)
+    return JWTStrategy(
+        secret=settings.secret, lifetime_seconds=JWT_LIFETIME_SECONDS
+    )
 
 
 auth_backend = AuthenticationBackend(
@@ -52,7 +57,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def validate_password(
         self,
         password: str,
-        user: Union[UserCreate, User],
+        user: Union[schemas.UC, User],
     ) -> None:
         """Валидация пароля."""
         if len(password) < 3:
@@ -68,7 +73,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         self, user: User, request: Optional[Request] = None
     ) -> None:
         """Действия после регистрации."""
-        print(f'Пользователь {user.email} зарегистрирован.')
+        logger.info('Пользователь %s зарегистрирован.', user.email)
 
 
 async def get_user_manager(

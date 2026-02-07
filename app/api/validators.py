@@ -57,7 +57,7 @@ def check_project_before_delete(
         )
 
 
-async def check_project_before_update(
+def check_project_before_update(
     project: CharityProject,
     new_full_amount: Optional[int],
 ) -> None:

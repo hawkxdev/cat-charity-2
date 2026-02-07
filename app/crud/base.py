@@ -1,11 +1,14 @@
 """Базовый CRUD класс."""
 
-from typing import Generic, Optional, Sequence, TypeVar
+from typing import TYPE_CHECKING, Generic, Optional, Sequence, TypeVar
 
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import false, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+if TYPE_CHECKING:
+    from app.models.user import User
 
 ModelType = TypeVar('ModelType')
 CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
@@ -55,7 +58,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         obj_in: CreateSchemaType,
         session: AsyncSession,
         *,
-        user: Optional[ModelType] = None,
+        user: Optional['User'] = None,
         commit: bool = True,
     ) -> ModelType:
         """Создать новый объект."""

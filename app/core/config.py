@@ -6,6 +6,9 @@ from pydantic import EmailStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+JWT_LIFETIME_SECONDS = 3600  # 1 час
+
+
 class Settings(BaseSettings):
     """Настройки приложения."""
 

@@ -62,7 +62,7 @@ async def update_charity_project(
 ):
     """Обновить проект."""
     project = await check_project_exists(project_id, session)
-    await check_project_before_update(project, obj_in.full_amount)
+    check_project_before_update(project, obj_in.full_amount)
     if obj_in.name is not None and obj_in.name != project.name:
         await check_name_duplicate(obj_in.name, session)
     project = await charity_project_crud.update(project, obj_in, session)
